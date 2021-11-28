@@ -10,6 +10,14 @@ declare module "styled-components" {
       dimmedtextLight: string;
       dimmedTerciary: string;
       dimmedSecondary: string;
+      alertSuccessPrimary: string;
+      alertSuccessSecondary: string;
+      alertWarningPrimary: string;
+      alertWarningSecondary: string;
+      alertErrorPrimary: string;
+      alertErrorSecondary: string;
+      alertInformativePrimary: string;
+      alertInformativeSecondary: string;
     };
   }
 }

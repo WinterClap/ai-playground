@@ -100,7 +100,6 @@ const itemVariants = {
 export const Predictions = ({ predictions }: Props) => {
   return (
     <Container variants={containerVariants} initial="hidden" animate="visible">
-      {!predictions && null}
       {predictions && predictions.length === 0 ? (
         <>
           <Title initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>

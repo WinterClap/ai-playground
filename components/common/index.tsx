@@ -44,6 +44,8 @@ interface IconContainerProps {
   inset?: string;
   cursor?: string;
   flexBasis?: string;
+  justifyContent?: string;
+  alignItems?: string;
 }
 
 export const IconContainer = styled(motion.div)<IconContainerProps>`
@@ -54,4 +56,6 @@ export const IconContainer = styled(motion.div)<IconContainerProps>`
   inset: ${(props) => props.inset || "auto"};
   cursor: ${(props) => props.cursor || "unset"};
   flex-basis: ${(props) => props.flexBasis || "unset"};
+  justify-content: ${(props) => props.justifyContent || "center"};
+  align-items: ${(props) => props.alignItems || "center"};
 `;

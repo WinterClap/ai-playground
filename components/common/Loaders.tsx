@@ -9,15 +9,17 @@ interface CircleLoaderProps {
   x?: string;
   y?: string;
 }
-
-const CircleLoaderSVG = styled(motion.svg)<CircleLoaderProps>`
-  width: ${(props) => props.spinnerSize + "px"};
-  height: ${(props) => props.spinnerSize + "px"};
+interface CircleLoaderSVGProps {
+  $spinnerSize: number;
+}
+const CircleLoaderSVG = styled(motion.svg)<CircleLoaderSVGProps>`
+  width: ${(props) => props.$spinnerSize + "px"};
+  height: ${(props) => props.$spinnerSize + "px"};
   circle {
     fill: transparent;
     stroke-linecap: round;
-    stroke-dasharray: calc(3.14 * ${(props) => props.spinnerSize});
-    stroke-width: ${(props) => props.spinnerSize / 20 + "px"};
+    stroke-dasharray: calc(3.14 * ${(props) => props.$spinnerSize});
+    stroke-width: ${(props) => props.$spinnerSize / 20 + "px"};
   }
 `;
 
@@ -58,7 +60,7 @@ export const CircleLoader = ({ spinnerSize, ...rest }: CircleLoaderProps) => {
       variants={circleLoaderVariants}
       initial="initial"
       animate="animate"
-      spinnerSize={spinnerSize}
+      $spinnerSize={spinnerSize}
       {...rest}
     >
       <motion.circle

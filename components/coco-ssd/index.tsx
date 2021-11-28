@@ -11,6 +11,7 @@ import { Col } from "../common";
 import { Predictions } from "./Predictions";
 import { BouncingLoader, CircleLoader } from "../common/Loaders";
 import { motion } from "framer-motion";
+import { Alert } from "../common/Alert";
 
 const circleLoaderSize = 120;
 
@@ -69,7 +70,7 @@ export const SSDFrame = () => {
       setImageSrc(response.url);
       console.log(response.url);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError(true);
       setLoadingNewExampleImage(false);
     }
@@ -109,11 +110,11 @@ export const SSDFrame = () => {
                   withLoader
                   disabled={loading || loadingNewExampleImage}
                   padding="10px"
-                  fontSize="1rem"
-                  fontWeight="bold"
-                  boxShadow="0px 0px 10px 1px rgba(15, 255, 255, 0.2)"
+                  $boxShadow="0px 0px 10px 1px rgba(15, 255, 255, 0.2)"
                   rounded="rounded-xl"
-                  bgColor={theme.colors.dimmedSecondary}
+                  $bgColor={theme.colors.dimmedSecondary}
+                  fontWeight="bold"
+                  fontSize="1rem"
                   onClick={() => {
                     console.log("clickedNewImage");
                     loadExampleImageHandler();
@@ -128,9 +129,9 @@ export const SSDFrame = () => {
                   padding="10px"
                   fontSize="1rem"
                   fontWeight="bold"
-                  boxShadow="0px 0px 10px 1px rgba(254, 22, 114, 0.2)"
+                  $boxShadow="0px 0px 10px 1px rgba(254, 22, 114, 0.2)"
                   rounded="rounded-xl"
-                  bgColor={theme.colors.dimmedTerciary}
+                  $bgColor={theme.colors.dimmedTerciary}
                   onClick={() => {
                     console.log("clickedNewImage");
                     loadExampleImageHandler();
@@ -144,41 +145,50 @@ export const SSDFrame = () => {
             )}
           </Col>
           {/*loading && "Processing loaded image..."*/}
-          {error && "E R R O R"}
-          <ImageBox
-            initial={{ boxShadow: "0px 0px 32px 1px rgba(255, 255, 255, 0.15)" }}
-            animate={{ boxShadow: "0px 0px 32px 1px rgba(255, 255, 255, 0.25)" }}
-            transition={{ duration: 2, repeat: loadingNewExampleImage ? Infinity : 1, repeatType: "mirror" }}
-          >
-            {loading ||
-              (loadingNewExampleImage && (
-                <Col height="100%" justifyContent="center" alignItems="center">
-                  <CircleLoader
-                    x="0"
-                    y="0"
-                    spinnerSize={circleLoaderSize}
-                    viewBox={`0 0 ${circleLoaderSize} ${circleLoaderSize}`}
-                    color={theme.colors.textLight}
-                  />
-                </Col>
-              ))}
-            {imageSrc && (
-              <StyledImage
-                id="image"
-                onLoad={() => {
-                  const timeout = 1000 + Math.floor(Math.random() * 1000);
-                  setTimeout(() => {
-                    setLoadingNewExampleImage(false);
-                    console.log("image loaded");
-                  }, timeout);
-                }} //TODO: change to false
-                src={imageSrc}
-                layout="fill"
-                objectFit="cover"
-              />
-            )}
-          </ImageBox>
-          <Predictions predictions={predictions} />
+          {!error && (
+            <ImageBox
+              initial={{ boxShadow: "0px 0px 32px 1px rgba(255, 255, 255, 0.15)" }}
+              animate={{ boxShadow: "0px 0px 32px 1px rgba(255, 255, 255, 0.25)" }}
+              transition={{ duration: 2, repeat: loadingNewExampleImage ? Infinity : 1, repeatType: "mirror" }}
+            >
+              {loading ||
+                (loadingNewExampleImage && !error && (
+                  <Col height="100%" justifyContent="center" alignItems="center">
+                    <CircleLoader
+                      x="0"
+                      y="0"
+                      spinnerSize={circleLoaderSize}
+                      viewBox={`0 0 ${circleLoaderSize} ${circleLoaderSize}`}
+                      color={theme.colors.textLight}
+                    />
+                  </Col>
+                ))}
+              {imageSrc && !error && (
+                <StyledImage
+                  id="image"
+                  onLoad={() => {
+                    const timeout = 1000 + Math.floor(Math.random() * 1000);
+                    setTimeout(() => {
+                      setLoadingNewExampleImage(false);
+                      console.log("image loaded");
+                    }, timeout);
+                  }}
+                  src={imageSrc}
+                  layout="fill"
+                  objectFit="cover"
+                />
+              )}
+            </ImageBox>
+          )}
+          {error && (
+            <Alert
+              type="error"
+              description="There was an error trying to load the image."
+              height="fit-content"
+              width="fit-content"
+            />
+          )}
+          {predictions && <Predictions predictions={predictions} />}
         </Frame>
       </FrameBox>
       {predictions && JSON.stringify(predictions, null, 2)}

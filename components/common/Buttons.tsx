@@ -1,34 +1,34 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
-interface ButtonProps {
+interface StyledButtonProps {
   padding?: string;
   margin?: string;
   text?: string;
   rounded?: "rounded-2xl" | "rounded-xl";
   border?: string;
-  bgColor?: string;
-  isDisabled?: boolean;
+  $bgColor?: string;
+  $isDisabled?: boolean;
   fontWeight?: string;
   fontSize?: string;
-  boxShadow?: string;
+  $boxShadow?: string;
 }
 
-const StyledButton = styled(motion.button)<ButtonProps>`
-  cursor: ${(props) => (props.isDisabled ? "not-allowed" : "pointer")};
+const StyledButton = styled(motion.button)<StyledButtonProps>`
+  cursor: ${(props) => (props.$isDisabled ? "not-allowed" : "pointer")};
   border-radius: ${(props) =>
     props.rounded && props.rounded === "rounded-2xl" ? "40px" : props.rounded === "rounded-xl" ? "20px" : "0px"};
   margin: ${(props) => props.margin || "0"};
   padding: ${(props) => props.padding || "0"};
   border: ${(props) => props.border || "none"};
-  background-color: ${(props) => props.bgColor || "transparent"};
+  background-color: ${(props) => props.$bgColor || "transparent"};
   color: ${(props) => props.theme.colors.textLight};
   font-weight: ${(props) => props.fontWeight || "normal"};
   font-size: ${(props) => props.fontSize || "auto"};
-  box-shadow: ${(props) => props.boxShadow || "none"};
+  box-shadow: ${(props) => props.$boxShadow || "none"};
 `;
 
-interface ButtonProps {
+interface ButtonProps extends StyledButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   withLoader?: boolean;
@@ -37,7 +37,7 @@ interface ButtonProps {
 export const Button: React.FC<ButtonProps> = ({ children, disabled, withLoader, ...rest }) => {
   return (
     <StyledButton
-      isDisabled={disabled}
+      $isDisabled={disabled}
       disabled={disabled}
       whileTap={{ scale: 0.95 }}
       whileHover={{ scale: 1.05 }}
