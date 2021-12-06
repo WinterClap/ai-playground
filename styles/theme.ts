@@ -17,7 +17,7 @@ const theme: DefaultTheme = {
     alertErrorPrimary: "#dc3055",
     alertErrorSecondary: "#851d40",
     alertInformativePrimary: "#006fe0",
-    alertInformativeSecondary: "#05488a",
+    alertInformativeSecondary: "#003371",
   },
 };
 
