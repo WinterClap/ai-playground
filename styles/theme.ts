@@ -18,6 +18,13 @@ const theme: DefaultTheme = {
     alertErrorSecondary: "#851d40",
     alertInformativePrimary: "#006fe0",
     alertInformativeSecondary: "#003371",
+    blurEffectGeneralLight: "rgba(255,255,255,0.1)",
+    blurEffectGeneralDark: "rgba(1, 0, 28, 0.3)",
+    blurDimmedSecondary: "rgba(15, 255, 255, 0.1)",
+    blurDimmedTerciary: "rgba(254, 22, 114, 0.2)",
+    hoverPrimary: "#02005e",
+    hoverSecondary: "rgba(15, 255, 255, 0.5)",
+    hoverTerciary: "rgba(254, 22, 114, 0.2)",
   },
 };
 

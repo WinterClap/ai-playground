@@ -83,9 +83,10 @@ const BouncingBox = styled(motion.div)`
 interface BouncingSphereProps {
   size: number | undefined;
   color?: string;
+  spacing?: string;
 }
 const BouncingSphere = styled(motion.span)<BouncingSphereProps>`
-  margin: 0 4px;
+  margin: 0 ${(props) => props.spacing || "4px"};
   border-radius: 50%;
   width: ${(props) => (props.size ? props.size + "px" : "50px")};
   height: ${(props) => (props.size ? props.size + "px" : "50px")};
@@ -96,11 +97,13 @@ interface BouncingLoaderProps {
   size?: number;
   units?: number;
   color?: string;
+  spacing?: string;
 }
 
 const bouncingLoaderBoxVariants: Variants = {
-  initiale: {},
-  animatee: {},
+  initial: { scale: 0 },
+  animate: { scale: 1 },
+  exit: { scale: 0 },
 };
 const bouncingLoaderItemVariants: Variants = {
   animate: (index: number) => ({
@@ -113,12 +116,13 @@ const bouncingLoaderItemVariants: Variants = {
   }),
 };
 
-export const BouncingLoader: React.FC<BouncingLoaderProps> = ({ size, units, color }) => {
+export const BouncingLoader: React.FC<BouncingLoaderProps> = ({ size, units, color, spacing }) => {
   const spheres = Array.from(new Array(units));
   return (
-    <BouncingBox variants={bouncingLoaderBoxVariants} initial="initial" animate="animate">
+    <BouncingBox variants={bouncingLoaderBoxVariants} initial="initial" animate="animate" exit="exit" key="12345">
       {spheres.map((sphere, index) => (
         <BouncingSphere
+          spacing={spacing}
           custom={index}
           variants={bouncingLoaderItemVariants}
           animate="animate"
@@ -131,4 +135,4 @@ export const BouncingLoader: React.FC<BouncingLoaderProps> = ({ size, units, col
   );
 };
 
-BouncingLoader.defaultProps = { size: 10, units: 3, color: theme.colors.textLight };
+BouncingLoader.defaultProps = { size: 10, units: 3, color: theme.colors.textLight, spacing: "4px" };

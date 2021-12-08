@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { Row } from ".";
 
 interface StyledButtonProps {
   padding?: string;
@@ -31,7 +32,7 @@ const StyledButton = styled(motion.button)<StyledButtonProps>`
 interface ButtonProps extends StyledButtonProps {
   onClick?: () => void;
   disabled?: boolean;
-  withLoader?: boolean;
+  withLoader?: React.ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({ children, disabled, withLoader, ...rest }) => {
@@ -44,8 +45,16 @@ export const Button: React.FC<ButtonProps> = ({ children, disabled, withLoader, 
       transition={{ duration: 0.1 }}
       {...rest}
     >
-      {withLoader && disabled && "LOADER"}
-      {children}
+      <AnimatePresence exitBeforeEnter>
+        {withLoader && disabled ? (
+          <Row justifyContent="space-between" key="123123" initial={{ scale: 0 }} animate={{ scale: 1 }}>
+            {children}
+            {withLoader}
+          </Row>
+        ) : (
+          <>{children}</>
+        )}
+      </AnimatePresence>
     </StyledButton>
   );
 };

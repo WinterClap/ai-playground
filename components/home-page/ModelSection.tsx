@@ -61,7 +61,7 @@ const ReferenceLink = ({ href, name }: ReferenceProps) => {
 };
 export const ModelSection = ({ models }: Props) => {
   return (
-    <Container>
+    <Container id="models">
       <SectionTitle
         title={"Models"}
         description={"Simple model playground showcase based on pre-trained Tensorflow.js models. More information on "}

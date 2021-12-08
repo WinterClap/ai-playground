@@ -18,6 +18,13 @@ declare module "styled-components" {
       alertErrorSecondary: string;
       alertInformativePrimary: string;
       alertInformativeSecondary: string;
+      blurEffectGeneralLight: string;
+      blurEffectGeneralDark: string;
+      blurDimmedTerciary: string;
+      blurDimmedSecondary: string;
+      hoverPrimary: string;
+      hoverSecondary: string;
+      hoverTerciary: string;
     };
   }
 }

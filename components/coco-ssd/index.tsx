@@ -12,7 +12,8 @@ import { Predictions } from "./Predictions";
 import { BouncingLoader, CircleLoader } from "../common/Loaders";
 import { motion } from "framer-motion";
 import { Alert } from "../common/Alert";
-
+import { models, modelsName } from "../../constants/homePage";
+import { Uploader } from "../common/Uploader";
 const circleLoaderSize = 120;
 
 const cocoSsd = require("@tensorflow-models/coco-ssd");
@@ -94,13 +95,15 @@ export const SSDFrame = () => {
     };
     getPredictions();
   }, [loadingNewExampleImage, imageSrc]);
+
+  const { SSD_OBJECT_DETECTION } = modelsName;
+  const [modelInfo] = models.filter((item) => item.name === SSD_OBJECT_DETECTION);
+  const defaultText = "made simple";
   return (
     <Container>
-      <ModelHeader
-        highlightedText="SSD: Single Shot Object Detector"
-        text="made simple"
-        description={"A short but suitable description here designed to help users get started with the tool"}
-      />
+      {modelInfo && (
+        <ModelHeader highlightedText={modelInfo.name} text={defaultText} description={modelInfo.description} />
+      )}
       <FrameBox>
         <Frame>
           <Col width="150px" height="150px" justifyContent="space-around">
@@ -123,22 +126,7 @@ export const SSDFrame = () => {
                   Load new example image
                 </Button>
                 OR
-                <Button
-                  withLoader
-                  disabled={loading || loadingNewExampleImage}
-                  padding="10px"
-                  fontSize="1rem"
-                  fontWeight="bold"
-                  $boxShadow="0px 0px 10px 1px rgba(254, 22, 114, 0.2)"
-                  rounded="rounded-xl"
-                  $bgColor={theme.colors.dimmedTerciary}
-                  onClick={() => {
-                    console.log("clickedNewImage");
-                    loadExampleImageHandler();
-                  }}
-                >
-                  Upload an image
-                </Button>
+                <Uploader>Upload an image</Uploader>
               </>
             ) : (
               loading || (loadingNewExampleImage && <BouncingLoader color={theme.colors.terciary} />)

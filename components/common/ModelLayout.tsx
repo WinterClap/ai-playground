@@ -46,6 +46,10 @@ const ListLinkItem = styled(motion.li)`
     margin-right: 30px;
   }
 `;
+
+const StyledAnchor = styled.a`
+  margin-right: 20px;
+`;
 export const ModelLayout: React.FC<ModelLayoutProps> = ({ children }) => {
   return (
     <>
@@ -62,11 +66,13 @@ export const ModelLayout: React.FC<ModelLayoutProps> = ({ children }) => {
           {navBarItems.map((item, index) =>
             item.hasSubmenu ? (
               <Link passHref href={item.href} key={index}>
-                <ListLinkItemWithSubmenu
-                  submenu={<NavBarSubMenu items={models} />}
-                  title={item.title}
-                  icon={item.icon}
-                />
+                <StyledAnchor>
+                  <ListLinkItemWithSubmenu
+                    submenu={<NavBarSubMenu items={models} />}
+                    title={item.title}
+                    icon={item.icon}
+                  />
+                </StyledAnchor>
               </Link>
             ) : (
               <Link passHref href={item.href} key={index}>

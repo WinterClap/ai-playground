@@ -12,7 +12,7 @@ interface FlexInterface {
   flexWrap?: string;
 }
 
-export const Col = styled.div<FlexInterface>`
+export const Col = styled(motion.div)<FlexInterface>`
   display: flex;
   height: ${(props) => props.height || "auto"};
   margin: ${(props) => props.margin || "0"};
@@ -24,7 +24,7 @@ export const Col = styled.div<FlexInterface>`
   padding: ${(props) => props.padding || "auto"};
 `;
 
-export const Row = styled.div<FlexInterface>`
+export const Row = styled(motion.div)<FlexInterface>`
   display: flex;
   height: ${(props) => props.height || "auto"};
   flex-wrap: ${(props) => props.flexWrap || "no-wrap"};

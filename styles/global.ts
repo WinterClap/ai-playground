@@ -13,6 +13,8 @@ const GlobalStyle = createGlobalStyle`
     a {
         color: inherit;
         text-decoration: none;
+        padding: 0;
+        margin: 0;
     }
 
     * {
