@@ -14,7 +14,6 @@ const Container = styled(motion.div)`
   backdrop-filter: blur(3px);
   color: ${(props) => props.theme.colors.textLight};
   width: 300px;
-  height: 150px;
   position: absolute;
   top: 30px;
   border-radius: 20px 20px 30px 30px;
@@ -27,7 +26,7 @@ const Container = styled(motion.div)`
 `;
 
 const PillOption = styled(motion.div)`
-  font-size: 0.5rem;
+  font-size: 0.7rem;
   margin: 3px;
   width: fit-content;
   padding: 5px 15px;

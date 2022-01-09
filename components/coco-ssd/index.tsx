@@ -14,6 +14,9 @@ import { motion } from "framer-motion";
 import { Alert } from "../common/Alert";
 import { models, modelsName } from "../../constants/homePage";
 import { Uploader } from "../common/Uploader";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { BoxDrawer } from "./BoxDrawer";
 const circleLoaderSize = 120;
 
 const cocoSsd = require("@tensorflow-models/coco-ssd");
@@ -59,6 +62,7 @@ export const SSDFrame = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string | undefined>("https://source.unsplash.com/random");
+  const uploadedImage = useSelector((state: RootState) => state.fileUploader.image);
 
   const loadExampleImageHandler = useCallback(async () => {
     setError(false);
@@ -96,6 +100,12 @@ export const SSDFrame = () => {
     getPredictions();
   }, [loadingNewExampleImage, imageSrc]);
 
+  useEffect(() => {
+    if (uploadedImage) {
+      console.log("uploadedImage", uploadedImage);
+      setImageSrc(uploadedImage);
+    }
+  }, [uploadedImage]);
   const { SSD_OBJECT_DETECTION } = modelsName;
   const [modelInfo] = models.filter((item) => item.name === SSD_OBJECT_DETECTION);
   const defaultText = "made simple";
@@ -152,19 +162,22 @@ export const SSDFrame = () => {
                   </Col>
                 ))}
               {imageSrc && !error && (
-                <StyledImage
-                  id="image"
-                  onLoad={() => {
-                    const timeout = 1000 + Math.floor(Math.random() * 1000);
-                    setTimeout(() => {
-                      setLoadingNewExampleImage(false);
-                      console.log("image loaded");
-                    }, timeout);
-                  }}
-                  src={imageSrc}
-                  layout="fill"
-                  objectFit="cover"
-                />
+                <>
+                  <BoxDrawer predictions={predictions} />
+                  <StyledImage
+                    id="image"
+                    onLoad={() => {
+                      const timeout = 1000 + Math.floor(Math.random() * 1000);
+                      setTimeout(() => {
+                        setLoadingNewExampleImage(false);
+                        console.log("image loaded");
+                      }, timeout);
+                    }}
+                    src={imageSrc}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </>
               )}
             </ImageBox>
           )}

@@ -2,6 +2,8 @@ import "styled-components";
 declare module "styled-components" {
   export interface DefaultTheme {
     colors: {
+      backgroundDark: string;
+      backgroundDarkHover: string;
       primary: string;
       secondary: string;
       terciary: string;

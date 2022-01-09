@@ -1,10 +1,12 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { IconContainer } from "../common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDoubleRight, faSadTear } from "@fortawesome/free-solid-svg-icons";
 import { theme } from "../../styles/theme";
 import { CocoSSDPredictionsType } from "./models";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const capitalize = (str: string | undefined) => {
   return str ? str.substring(0, 1).toUpperCase() + str.substring(1) : null;
@@ -56,8 +58,10 @@ const OutOfOneHundred = styled.div`
   color: ${(props) => props.theme.colors.dimmedtextLight};
 `;
 
-interface ItemBoxProps {}
-const ItemBox = styled(motion.div)`
+interface ItemBoxProps {
+  $isSelected: boolean;
+}
+const ItemBox = styled(motion.div)<ItemBoxProps>`
   padding: 10px;
   width: 100%;
   display: flex;
@@ -65,10 +69,12 @@ const ItemBox = styled(motion.div)`
   margin: 10px 0px;
   box-shadow: 0 0 20px 4px rgba(255, 255, 255, 0.1);
   border-radius: 15px;
-  background-color: #00000f;
+  transition: background-color 150ms ease-in-out;
+  background-color: ${(props) =>
+    props.$isSelected ? props.theme.colors.backgroundDarkHover : props.theme.colors.backgroundDark};
 `;
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0, scale: 0 },
   visible: {
     scale: 1,
@@ -80,7 +86,7 @@ const containerVariants = {
   },
 };
 
-const boxVariants = {
+const boxVariants: Variants = {
   hidden: { opacity: 0, scale: 0 },
   visible: (index: number) => ({
     scale: 1,
@@ -89,7 +95,7 @@ const boxVariants = {
   }),
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { scale: 0 },
   visible: (index: number) => ({
     rotate: 360,
@@ -98,6 +104,7 @@ const itemVariants = {
   }),
 };
 export const Predictions = ({ predictions }: Props) => {
+  const indexHovered = useSelector((state: RootState) => state.boxDrawer.indexHovered);
   return (
     <Container variants={containerVariants} initial="hidden" animate="visible">
       {predictions && predictions.length === 0 ? (
@@ -117,7 +124,7 @@ export const Predictions = ({ predictions }: Props) => {
             </Title>
             {predictions &&
               predictions.map((prediction, index) => (
-                <ItemBox custom={index} variants={boxVariants} key={index}>
+                <ItemBox custom={index} variants={boxVariants} key={index} $isSelected={index === indexHovered}>
                   <ScoreCounterBox>
                     <ScoreCounter>{Number(prediction.score && prediction.score * 100).toPrecision(4)}</ScoreCounter>
                     <OutOfOneHundred>/100</OutOfOneHundred>
