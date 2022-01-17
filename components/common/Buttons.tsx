@@ -13,6 +13,7 @@ interface StyledButtonProps {
   fontWeight?: string;
   fontSize?: string;
   $boxShadow?: string;
+  color?: string;
 }
 
 const StyledButton = styled(motion.button)<StyledButtonProps>`
@@ -23,7 +24,7 @@ const StyledButton = styled(motion.button)<StyledButtonProps>`
   padding: ${(props) => props.padding || "0"};
   border: ${(props) => props.border || "none"};
   background-color: ${(props) => props.$bgColor || "transparent"};
-  color: ${(props) => props.theme.colors.textLight};
+  color: ${(props) => props.color || props.theme.colors.textLight};
   font-weight: ${(props) => props.fontWeight || "normal"};
   font-size: ${(props) => props.fontSize || "auto"};
   box-shadow: ${(props) => props.$boxShadow || "none"};
@@ -47,7 +48,7 @@ export const Button: React.FC<ButtonProps> = ({ children, disabled, withLoader, 
     >
       <AnimatePresence exitBeforeEnter>
         {withLoader && disabled ? (
-          <Row justifyContent="space-between" key="123123" initial={{ scale: 0 }} animate={{ scale: 1 }}>
+          <Row $justifyContent="space-between" key="123123" initial={{ scale: 0 }} animate={{ scale: 1 }}>
             {children}
             {withLoader}
           </Row>

@@ -93,7 +93,7 @@ export const Alert: React.FC<AlertComponentProps> = ({
       $maxWidth={maxWidth}
       $containerColor={primaryColor}
     >
-      <Row justifyContent="flex-start">
+      <Row $justifyContent="flex-start">
         <Col width="60px">
           <Span spanColor={secondaryColor}>
             <IconBox>
@@ -102,7 +102,7 @@ export const Alert: React.FC<AlertComponentProps> = ({
           </Span>
         </Col>
 
-        <Col alignItems="flex-start">
+        <Col $alignItems="flex-start">
           <AlertHeader fontSize={titleFontSize}>{title || defaultTitle}</AlertHeader>
           <AlertDescription fontSize={descFontSize}>{description || defaultDescription}</AlertDescription>
         </Col>

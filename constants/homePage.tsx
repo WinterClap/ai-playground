@@ -46,7 +46,7 @@ export const models: ModelsType = [
     name: modelsName.POSE_DETECTION,
     description:
       "Unified pose detection API for using one of three models that help detect atypical poses and fast body motions with real time performance",
-    href: "/models/",
+    href: "/models/pose-detection",
     icons: [faDiagnoses],
   },
   {

@@ -68,7 +68,7 @@ export const ModelSection = ({ models }: Props) => {
         reference={<ReferenceLink href={"https://www.tensorflow.org/js/models"} name="Tensorflow.js models" />}
         padding={"120px 0 40px 40px"}
       />
-      <Row flexWrap="wrap" full justifyContent="space-around">
+      <Row $flexWrap="wrap" full $justifyContent="space-around">
         {models.length !== 0 &&
           models.map((model, index) => (
             <Link href={model.href} passHref key={model.name + index}>
@@ -78,7 +78,7 @@ export const ModelSection = ({ models }: Props) => {
                 transition={{ duration: 0.2 }}
               >
                 <ImageBox>
-                  <Col width={"100px"} flexWrap="wrap">
+                  <Col width={"100px"} $flexWrap="wrap">
                     <Row>
                       {model.icons.slice(0, 3).map((icon, i) => (
                         <IconContainer key={i}>

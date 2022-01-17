@@ -61,7 +61,7 @@ export const NavBarSubMenu: React.FC<NavBarSubMenuProps> = ({ items }) => {
     //TODO: Create List component to render these models
     <Container initial={{ scale: 0 }} animate={{ scale: 1, originX: "0", originY: "0" }} exit={{ scale: 0 }}>
       {sections.map((sectionArrangements, index) => (
-        <Col alignItems="flex-start" justifyContent="flex-start" width="100%" key={index}>
+        <Col $alignItems="flex-start" $justifyContent="flex-start" width="100%" key={index}>
           {sectionArrangements.map((arrangement) => (
             <Link href={arrangement.href} passHref key={`${arrangement.name}-${index}`}>
               <PillOption whileHover={{ backgroundColor: `${theme.colors.hoverPrimary}` }}>

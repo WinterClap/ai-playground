@@ -62,7 +62,7 @@ export const ModelHeader: React.FC<ModelHeaderProps> = ({
 }) => {
   return (
     <>
-      <Col padding="100px 30px 0px 30px" full justifyContent="space-between">
+      <Col padding="100px 30px 0px 30px" full $justifyContent="space-between">
         <span>
           <Text display="inline" highlight size="2.4rem">
             {highlightedText}

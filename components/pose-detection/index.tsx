@@ -1,25 +1,24 @@
-import styled from "styled-components";
-import { ModelHeader } from "../common/models";
 import Image from "next/image";
+import * as poseDetection from "@tensorflow-models/pose-detection";
+import * as tf from "@tensorflow/tfjs-core";
 import "@tensorflow/tfjs-backend-webgl";
-import "@tensorflow/tfjs-backend-cpu";
 
-import { useCallback, useEffect, useState } from "react";
-import { Button } from "../common/Buttons";
-import { theme } from "../../styles/theme";
-import { Col } from "../common";
-import { Predictions } from "./Predictions";
-import { BouncingLoader, CircleLoader } from "../common/Loaders";
 import { motion } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { theme } from "../../styles/theme";
+
 import { Alert } from "../common/Alert";
 import { models, modelsName } from "../../constants/homePage";
+import { ModelHeader } from "../common/models";
+import { Button } from "../common/Buttons";
+import { Col } from "../common";
 import { Uploader } from "../common/Uploader";
-import { useSelector } from "react-redux";
+import { BouncingLoader, CircleLoader } from "../common/Loaders";
 import { RootState } from "../store/store";
-import { BoxDrawer } from "./BoxDrawer";
-const circleLoaderSize = 120;
-
-const cocoSsd = require("@tensorflow-models/coco-ssd");
+import { Pose, PoseDetectorInput } from "@tensorflow-models/pose-detection";
+import { NoPosesFound, PosesCanvas } from "./PosesCanvas";
 
 const Container = styled.section`
   background-color: ${(props) => props.theme.colors.primary};
@@ -46,8 +45,8 @@ const Frame = styled.div`
   align-items: center;
 `;
 const ImageBox = styled(motion.div)`
-  width: 300px;
-  height: 300px;
+  width: 400px;
+  height: 400px;
   box-shadow: 0px 0px 32px 1px rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   position: relative;
@@ -56,22 +55,33 @@ const ImageBox = styled(motion.div)`
 const StyledImage = styled(Image)`
   border-radius: 10px;
 `;
-export const SSDFrame = () => {
-  const [predictions, setPredictions] = useState<object[] | [] | undefined>(undefined);
-  const [loadingNewExampleImage, setLoadingNewExampleImage] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  const [imageSrc, setImageSrc] = useState<string | undefined>("https://source.unsplash.com/random");
-  const uploadedImage = useSelector((state: RootState) => state.fileUploader.image);
 
+const circleLoaderSize = 120;
+
+interface Props {}
+
+const RANDOM_BODY_POSES_URL = "https://source.unsplash.com/random/?body, poses";
+export const PoseDetectionFrame = (props: Props) => {
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [poseDetector, setPoseDetector] = useState<poseDetection.PoseDetector | null | undefined>(null);
+  const [poses, setPoses] = useState<Pose[] | null | undefined>(null);
+  const [imageSrc, setImageSrc] = useState<string | undefined>(RANDOM_BODY_POSES_URL);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingNewExampleImage, setLoadingNewExampleImage] = useState<boolean>(false);
+  const [loadingUploadedImage, setLoadingUploadedImage] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const { POSE_DETECTION } = modelsName;
+  const [modelInfo] = models.filter((model) => model.name === POSE_DETECTION);
+  const defaultText = "made simple";
+
+  const uploadedImage = useSelector((state: RootState) => state.fileUploader.image);
   const loadExampleImageHandler = useCallback(async () => {
     setError(false);
     setLoadingNewExampleImage(true);
-    setPredictions(undefined);
     setImageSrc(undefined);
     let response;
     try {
-      response = await fetch("https://source.unsplash.com/random");
+      response = await fetch(RANDOM_BODY_POSES_URL);
       setImageSrc(response.url);
       console.log(response.url);
     } catch (err) {
@@ -82,33 +92,52 @@ export const SSDFrame = () => {
   }, []);
 
   useEffect(() => {
-    const getPredictions = async () => {
-      if (!loadingNewExampleImage && imageSrc) {
-        setLoading(true);
+    const initializeDetector = async () => {
+      const detectorConfig: poseDetection.MoveNetModelConfig = {
+        modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
+      };
+      const detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
+      setPoseDetector(detector);
+    };
+    try {
+      initializeDetector();
+    } catch (err) {
+      console.error(err);
+      setError(true);
+    }
+  }, []);
+  useEffect(() => {
+    const getPosesFromImage = async () => {
+      setLoading(true);
+      setPoses(null);
+      if (poseDetector && imageSrc && !loadingNewExampleImage && !loadingUploadedImage) {
+        console.log("Getting poses...");
         const img = document.getElementById("image");
-        // Load the model.
-        const model = await cocoSsd.load();
-        // Classify the image.
-        const possiblePredictions = await model.detect(img);
-        console.log("Possible predictions: ", possiblePredictions);
-        setPredictions(possiblePredictions);
+        try {
+          console.log("triying to detect");
+          const detectedPoses = await poseDetector.estimatePoses(img as HTMLImageElement);
+          detectedPoses && setPoses(detectedPoses);
+          console.log("detected", detectedPoses);
+        } catch (err) {
+          console.error(err);
+          setError(true);
+        }
         setLoading(false);
       } else {
-        console.log("model not loaded");
+        console.log("Detector not triggered");
+        setLoading(false);
       }
     };
-    getPredictions();
-  }, [loadingNewExampleImage, imageSrc]);
+    imageSrc && getPosesFromImage();
+  }, [imageSrc, poseDetector, loadingNewExampleImage, loadingUploadedImage]);
 
   useEffect(() => {
     if (uploadedImage) {
+      setLoadingUploadedImage(true);
       console.log("uploadedImage", uploadedImage);
       setImageSrc(uploadedImage);
     }
   }, [uploadedImage]);
-  const { SSD_OBJECT_DETECTION } = modelsName;
-  const [modelInfo] = models.filter((item) => item.name === SSD_OBJECT_DETECTION);
-  const defaultText = "made simple";
   return (
     <Container>
       {modelInfo && (
@@ -116,9 +145,20 @@ export const SSDFrame = () => {
       )}
       <FrameBox>
         <Frame>
-          <Col width="150px" height="150px" $justifyContent="space-around">
+          <Col width="180px" height="180px" $justifyContent="space-around">
             {!loading && !loadingNewExampleImage ? (
               <>
+                <Button
+                  padding="10px"
+                  rounded="rounded-xl"
+                  $bgColor={theme.colors.textLight}
+                  fontWeight="bold"
+                  fontSize="1rem"
+                  color={theme.colors.textDark}
+                >
+                  Use Camera
+                </Button>
+                OR
                 <Button
                   withLoader
                   disabled={loading || loadingNewExampleImage}
@@ -133,7 +173,7 @@ export const SSDFrame = () => {
                     loadExampleImageHandler();
                   }}
                 >
-                  Load new example image
+                  Load random image
                 </Button>
                 OR
                 <Uploader>Upload an image</Uploader>
@@ -142,9 +182,9 @@ export const SSDFrame = () => {
               loading || (loadingNewExampleImage && <BouncingLoader color={theme.colors.terciary} />)
             )}
           </Col>
-          {/*loading && "Processing loaded image..."*/}
           {!error && (
             <ImageBox
+              ref={imageRef}
               initial={{ boxShadow: "0px 0px 32px 1px rgba(255, 255, 255, 0.15)" }}
               animate={{ boxShadow: "0px 0px 32px 1px rgba(255, 255, 255, 0.25)" }}
               transition={{ duration: 2, repeat: loadingNewExampleImage ? Infinity : 1, repeatType: "mirror" }}
@@ -163,13 +203,13 @@ export const SSDFrame = () => {
                 ))}
               {imageSrc && !error && (
                 <>
-                  <BoxDrawer predictions={predictions} />
                   <StyledImage
                     id="image"
                     onLoad={() => {
                       const timeout = 1000 + Math.floor(Math.random() * 1000);
                       setTimeout(() => {
                         setLoadingNewExampleImage(false);
+                        setLoadingUploadedImage(false);
                         console.log("image loaded");
                       }, timeout);
                     }}
@@ -181,17 +221,27 @@ export const SSDFrame = () => {
               )}
             </ImageBox>
           )}
+          {!error && imageSrc && !loading && !loadingUploadedImage && poses && poses.length > 0 && (
+            <ImageBox
+              initial={{ boxShadow: "0px 0px 32px 1px rgba(255, 255, 255, 0.15)", scale: 0 }}
+              animate={{ boxShadow: "0px 0px 32px 1px rgba(255, 255, 255, 0.25)", scale: 1 }}
+            >
+              <StyledImage id="image" src={imageSrc} layout="fill" objectFit="cover" />
+              <PosesCanvas poses={poses} width={400} height={400} />
+            </ImageBox>
+          )}
+          {poses && poses.length === 0 && <NoPosesFound />}
           {error && (
             <Alert
               type="error"
-              description="There was an error trying to load the image."
+              description="There was an error trying to detect poses"
               height="fit-content"
               width="fit-content"
             />
           )}
-          {predictions && <Predictions predictions={predictions} />}
         </Frame>
       </FrameBox>
+      {poses && JSON.stringify(poses)}
     </Container>
   );
 };

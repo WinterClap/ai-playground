@@ -110,7 +110,7 @@ export const Predictions = ({ predictions }: Props) => {
       {predictions && predictions.length === 0 ? (
         <>
           <Title initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-            No predictions found for this image. Try again
+            No predictions found for this image. Try again.
           </Title>
           <IconContainer initial={{ scale: 0 }} animate={{ scale: [0, 2, 1] }} margin="20px 0 0 0">
             <FontAwesomeIcon icon={faSadTear} size="3x" color={theme.colors.terciary} />

@@ -32,7 +32,7 @@ export const ListLinkItemWithSubmenu = ({ title, icon, submenu }: ListLinkItemWi
       onMouseEnter={() => setIsSubmenuVisible(true)}
       whileHover={{ color: `${theme.colors.dimmedtextLight}` }}
     >
-      <Row justifyContent="space-around">
+      <Row $justifyContent="space-around">
         {title}
         <IconContainer margin="0 0 3px 0">
           <FontAwesomeIcon icon={icon} color={theme.colors.textLight} />
